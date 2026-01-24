@@ -11,14 +11,16 @@ public class PrimeNumber {
         long cnt = 0;
 
         // Write your code
-        ...
+        
 
         // Print the results
         System.out.println(cnt);
     }
 
+    /* 
     // Function to check if it is prime
     private static boolean isPrime(long num) {
-
+        pass;
     }
+    */
 }
