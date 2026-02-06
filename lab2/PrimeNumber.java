@@ -1,13 +1,60 @@
+// Based on GeeksforGeeks Solution
+// Uses Sieve of Eratosthenes algorithm
+
 import java.util.Scanner;
 
 public class PrimeNumber {
     public static void main(String[] args) {
+        // Collect input
         Scanner scanner = new Scanner(System.in);
+        // Read input
+        int n = scanner.nextInt();
+        // call sieve function
+        System.out.println(sieve(n));
+        scanner.close();
+    }
+
+    static int sieve(int n) {
+        // Initialise a boolean array sized n + 1, with all entries set to true,
+        // assuming all nums are prime intially.
+        boolean[] prime = new boolean[n + 1];
+        for (int i = 0; i <= n; i++) {
+            prime[i] = true;
+        }
+
+        // Start with p = 2, first prime num, for each p, eliminate all its
+        // multiples from the list of primes.
+        for (int p = 2; p * p <= n; p++) {
+            if (prime[p]) {
+                // marking as false
+                for (int i = p * p; i <= n; i += p) {
+                    prime[i] = false;
+                }
+            }
+        }
+
+        // count number of primes
+        int count = 0;
+        for (int p = 2; p <= n; p++) {
+            if (prime[p])
+                count++;
+        }
+
+        // return count
+        return count;
+    }
+}
+
+/*
+public class PrimeNumber {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        scanner.close();
 
         // Read the upper limit
         long limit = scanner.nextInt();
 
-        // Counter of prime number
+    
         long cnt = 0;
 
         // Write your code
@@ -17,7 +64,7 @@ public class PrimeNumber {
             if (isPrime(i) == true) {
                 cnt++;
             }
-        System.err.println(cnt);
+        // System.err.println(cnt);
         }
 
         // Print the results
@@ -48,3 +95,4 @@ public class PrimeNumber {
     }
     
 }
+*/
