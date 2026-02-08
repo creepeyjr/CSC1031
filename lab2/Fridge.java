@@ -8,32 +8,6 @@ The fridge will :
         - Adding food.
         - Retrieving food.
         - Checking fridge's status. 
-
-*/
-
-
-/*
-public class Fridge {
-    ...
-
-    public Fridge(int initialBalance) {
-        ...
-    }
-
-    public void addFood(String item, int cost) {
-        ...
-    }
-
-    public void getFood(String item) {
-        ...
-    }
-
-    public void checkStatus() {
-        ...
-    }
-
-
-}
 */
 
 import java.util.ArrayList;
@@ -42,30 +16,76 @@ import java.util.List;
 public class Fridge {
 
     // Attributes
-    List<String> foodItems;
-    int balance;
+    List<String> contents;  // array for fridge content 
+    int balance;  // balance variable
 
+    // public constructor
     public Fridge(int initialBalance) {
+        this.balance = initialBalance;  // initial balance of fridge
+        // initial state of fridge balance
+        if (balance <= -1) {
+            System.out.println("Error");
+            this.balance = 0;
+        }
+
+        // Create array for storing food
+        this.contents = new ArrayList<>();
+    }
+
+    // Extra boolean function to manage what inputs are valid.
+    public boolean validInput(String item, int cost) {
+        if (item != null && item.isEmpty() == false && cost >= 0 && this.balance >= cost) {
+            /*  IS TRUE IF :
+                    item isn't null object
+                    item is not empty
+                    cost is not a negative number
+                    balance is greater than cost
+            */
+            return true;
+        }
+        return false;
+    }
+
+    // Public getters and setters
+    public void addFood(String item, int cost) {
+        // add food item to the fridge and deducts the cost from balance
+        // initial state of fridge is unacceptable, print Error and set balance to 0.
+        if (validInput(item, cost)) { 
+            this.balance = this.balance - cost;  // pay for food
+            contents.add(item);  // add item to fridge
+            System.out.println("Item " + item + " has been added to the fridge.");
+        }
+        else {
+            System.out.println("Error"); // not enough funds
+        }
+    }
+
+    public void getFood(String item) {
+        // check if food exists in fridge
+        // ADD INPUT IS VALID IF TEST REQUIRES IT.
+        if (contents.contains(item) == true) {
+            // remove an item from the fridge
+            contents.remove(item);
+            System.out.println("Item " + item + " has been removed from the fridge.");
+        }
+        else {
+            // Send out an error message
+            System.out.println("Error");
+        }
         
     }
 
-    public static void main(String[] args) {
-        Fridge fridge = new Fridge(5); // Initial balance: €5
+    public void checkStatus() {
+        System.out.println("Food items:");
 
-        
-
-        /*  Uncoded functionss
-        fridge.addFood("Milk", 3);
-        fridge.addFood("Bread", 1);
-
-        // Not enough money now
-        // Error message should appear
-        fridge.addFood("Eggs", 4);
-
-        fridge.getFood("Milk");
-        fridge.getFood("Juice"); // Error message should appear
-
-        fridge.checkStatus();
-        */
+        if (contents.size() >= 1) {
+            for (int i = 0; i < contents.size(); i++) {
+                System.out.println(contents.get(i));
+            }
+        }
+        else {
+            System.out.println("(none)");
+        }
+        System.out.println("Balance: €" + balance);
     }
 }
