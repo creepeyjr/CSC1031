@@ -13,11 +13,11 @@ public class SmartHome {
 // Part 1 : Creating of Appliance class
 class Appliance {
     // Whole load of Attributes!!
-    private final int id;
-    private String brand;
+    private final int id;  // Unique identifier for each appliance
+    private String brand;  
     private double powerConsumption;
-    private boolean isOn;
-    private static int nextId = 1;
+    private boolean isOn;  // Tracks whether the appliance is currently ON or OFF
+    private static int nextId = 1;  // Static Variable used to generate unique IDs
 
     // Constructor
     public Appliance(String brand, double powerConsumption) {
@@ -29,9 +29,14 @@ class Appliance {
         this.isOn = false;
     }
 
+    /* 
     // Required Methods
     public int getId() {
         id = 
     }
+    */
 
+    void turnOn() {
+        
+    }
 }
