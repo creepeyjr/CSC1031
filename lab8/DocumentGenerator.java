@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -24,7 +25,7 @@ abstract class Document implements Reader {
     private void createHeader() {
         System.out.print("Enter company name: ");
         String companyName = scanner.nextLine();
-        if (companyName.isEmpty()) throw new IllegalArgumentException("Company name cannot be empty.");
+        if (companyName.isEmpty()) throw new IllegalArgumentException("Error: Company name cannot be empty.");
 
         System.out.print("Enter date (DD/MM/YYYY): ");
         String date = scanner.nextLine();
@@ -39,11 +40,11 @@ abstract class Document implements Reader {
     abstract void createBody();
 
     private void createFooter() {
-        if (getDocType() == "Invoice") {
+        if (getDocType().equals("INVOICE")) {
             content.add("Prepared by: AutoDoc System");
             content.add("Document Type: INVOICE");
         }
-        else if (getDocType() == "Report") {
+        else if (getDocType().equals("REPORT")) {
             content.add("Reviewed by: Management Department");
         }
         else {
@@ -53,6 +54,8 @@ abstract class Document implements Reader {
     }
 
     private void printDocument() {
+        System.out.println("\n=== Printing Document ===");
+        System.out.println("=== " + getDocType() + " ===");
         for (String line : content) {
             System.out.println(line);
         }
@@ -66,7 +69,7 @@ class Invoice extends Document {
     // Defining getDocType method
     @Override
     protected String getDocType() {
-        return "Invoice";
+        return "INVOICE";
     }
 
     // Override abstract createBody
@@ -75,10 +78,10 @@ class Invoice extends Document {
         // Total amount
         System.out.print("Enter total amount: ");
         double totalAmount = scanner.nextDouble();
-        if (totalAmount <= 0) throw new IllegalArgumentException("Total amount must be positive.");
+        if (totalAmount <= 0) throw new IllegalArgumentException("Error: Total amount must be positive.");
     
         // Add new values to doc
-        content.add("Total Amount: €" + totalAmount);
+        content.add("Total Due: €" + totalAmount);
     }
 }
 // report class
@@ -86,7 +89,7 @@ class Report extends Document {
     // Defining getDocType method
     @Override
     protected String getDocType() {
-        return "Report";
+        return "REPORT";
     }
 
     // Override abstract createBody
@@ -96,9 +99,9 @@ class Report extends Document {
         System.out.print("Enter report summary: ");
         String summary = scanner.nextLine();
         if (summary.isEmpty()) {
-            System.out.println("Warning, Summary empty.");
+            System.out.print("Warning: Summary is empty.\n");
         }
-        // Add new values to doc
+            // Add new values to doc
         content.add("Report Summary: " + summary);
     }
 }
@@ -107,10 +110,12 @@ class Receipt extends Document {
     // Defining getDocType method
     @Override
     protected String getDocType() {
-        return "Receipt";
+        return "RECEIPT";
     }
     // Override abstract createBody
     void createBody() {
+        //scanner.nextLine();
+        
         // Create body inputs
         //Amount paid
         System.out.print("Enter amount paid: ");
@@ -120,17 +125,46 @@ class Receipt extends Document {
         //Number of items
         System.out.print("Enter number of items: ");
         int itemsCount = scanner.nextInt();
-        if (itemsCount <= 0) throw new IllegalArgumentException("Items count must be positive.");
 
-        // Price per item
-        if (itemsCount == 0) {
-            throw new ArithmeticException("Cannot divide by zero.");
-        }
+        if (itemsCount <= 0) throw new IllegalArgumentException("Error: Items count must be positive.");
+
         double eachPrice = amountPaid / itemsCount;
 
         // Add new values to doc
-        content.add("Total Paid: " + amountPaid);
+        content.add("Total Paid: €" + amountPaid);
         content.add("Items Purchased: " + itemsCount);
-        content.add("Price per Item: " + eachPrice);
+        content.add("Price per Item: €" + eachPrice);
+    }
+}
+
+public class DocumentGenerator implements Reader{
+    public static void main(String[] args) {
+        try {
+            System.out.println("Choose document type: (INV) Invoice, (REP) Report, (REC) Receipt");
+            String choice = scanner.nextLine();
+            Document document;
+            switch (choice) {
+                case "INV":
+                    document = new Invoice();
+                    break;
+                case "REP":
+                    document = new Report();
+                    break;
+                case "REC":
+                    document = new Receipt();
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid choice. Exiting.");
+            }
+            document.generateDocument();
+            
+        } 
+        catch (InputMismatchException e) {
+            System.out.println("Error: Total amount must be numeric.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 }
