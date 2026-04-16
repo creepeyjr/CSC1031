@@ -1,83 +1,85 @@
-/*
-- Create a class.
-- Which represents configurable products in an e-commerce system.
-- Product should have diff configs depending on use case.
-- Be capable of creating independent copies for diff purposes. (order snapshots, versioning)
-*/
-
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-public class Product {
-    // Attributes
+class Product {
+    // attributes
     String productName;
-    long price; // in cents, so long number
-    boolean inStock;  // in stock boolean
-    List<String> tags;  // list of tags describing product
-
-    // 1. Public Constructor
+    long price;
+    boolean inStock;
+    List<String> tags;
+    
+    // Constructor here
     public Product() {
-        // initialise all variables and lists
         this.productName = "Unknown";
         this.price = 0;
         this.inStock = false;
         this.tags = new ArrayList<>();
     }
 
-    // Constructor with only product name
+    // 2. Constructor Overloading hereeeee
+    // Only productName
     public Product(String productName) {
-        this.productName = productName;
+        this.productName = (productName == null || productName.trim().isEmpty()) ? "Unknown" : productName;
         this.price = 0;
         this.inStock = false;
         this.tags = new ArrayList<>();
     }
-
-    // Constructor with product name and price
+    // Only productName and price
     public Product(String productName, long price) {
-        this.productName = productName;
-        this.price = price;
+        this.productName = (productName == null || productName.trim().isEmpty()) ? "Unknown" : productName;
+        this.price = Math.max(price, 0);
         this.inStock = false;
         this.tags = new ArrayList<>();
     }
-
-    // Constructor with product name, price, inStock
-    public Product(String productName, long price, boolean inStock) {
-        this.productName = productName;
-        this.price = price;
+    // Only price and inStock
+    public Product(long price, boolean inStock) {
+        this.productName = "Unknown";
+        this.price = Math.max(price, 0);
         this.inStock = inStock;
         this.tags = new ArrayList<>();
+    }
 
-    // 2. Main Constructor with all the fields
-    public Product(String productName, long price, boolean inStock, List<String> tags) {
-        this.productName = productName;
-        this.price = price;
+    // Only productName, price and inStock
+    public Product(String productName, long price, boolean inStock) {
+        this.productName = (productName == null || productName.trim().isEmpty()) ? "Unknown" : productName;
+        this.price = Math.max(price, 0);
         this.inStock = inStock;
-        /*  AI USED HERE
-            Ternary operator (Short if-else statement)
-            Structure : condition ? value_if_true : value_if_false
+        this.tags = new ArrayList<>();
+    }
+    // Only productName, price and tags
+    public Product(String productName, long price, List<String> tags) {
+        this.productName = (productName == null || productName.trim().isEmpty()) ? "Unknown" : productName;
+        this.price = Math.max(price, 0);
         
-            tags != null - Checks if tags parameter passed to constructor is not null.
-            ? - if, then this
-            new ArrayList<>(tags) - If tags is not null, create a new ArrayList that contains all elements passed from the passed-in tags list.
-            : - Else part of statement
-            new ArrayList<>() : If tags is null, create a new empty ArrayList.
-        */
-        this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
-        /* LONG VERSION
         if (tags != null) {
-            this.tags = new ArrayList<>(tags);  // Copy the passed-in list
-        } else {
-            this.tags = new ArrayList<>();      // Create empty list
+            this.tags = new ArrayList<>(tags);
         }
-        */
+        else {
+            this.tags = new ArrayList<>();
+        }
+    }
+
+    // With all 4 fields
+    public Product(String productName, long price, boolean inStock, List<String> tags) {
+        this.productName = (productName == null || productName.trim().isEmpty()) ? "Unknown" : productName;
+        this.price = Math.max(price, 0);
+        this.inStock = inStock;
+
+        // Logic to create or take in tags
+        if (tags != null) {
+            this.tags = new ArrayList<>(tags);
+        }
+        else {
+            this.tags = new ArrayList<>();
+        }
     }
 
     // 3. Deep Copy Constructor
-    public Product productCopy () {
-        Product a = new Product(this.productName, this.price, this.inStock);  //Use constructor to copy fields
-        return a;  // Method to return new independent object.
+    public Product(Product other) {
+        this.productName = other.productName;
+        this.price = other.price;
+        this.inStock = other.inStock;
+        this.tags = new ArrayList<>(other.tags);
     }
 
     // 4. Encapsulate the tags field.
@@ -87,24 +89,24 @@ public class Product {
         Lists are mutable objects and can be changed after creation.
         If list reference is shared, the object's internal state can be modified.
     */
-
     public List<String> getTags() {
-        return new ArrayList<>(this.tags);  // Returns a copy, not original
+        return new ArrayList<>(this.tags);
     }
 
     public void setTags(List<String> tags) {
-        // Takes a list of parameters from caller, 
-        // Creates a new ArrayList with said parameters
-        // And if the parameters are empty/null, create new list
-        // assigns this list to this.tags
-        this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
+        if (tags != null) {
+            this.tags = new ArrayList<>(tags);
+        }
+        else {
+            this.tags = new ArrayList<>();
+        }
     }
 
     public void addTag(String tag) {
-        if (tag != null && !tag.trim().isEmpty()) {
-            this.tags.add(tag);
-        }
+    if (tag != null) {
+        this.tags.add(tag);
     }
+}
 
     // 5. Override toString() function 
     @Override
